@@ -6,8 +6,15 @@ import sys
 from matplotlib import cm
 import matplotlib.lines as mlines
 
-from matplotlib import pyplot as plt
-
+def read_data(input):
+    # read csv file into dataframe
+    df = pd.read_csv(input)
+    # if second column is 1, plot it blue, otherwise red
+    colors = np.where(df.iloc[:, 2] == 1, 'blue', 'red')
+    # plot
+    plt.scatter(df.iloc[:, 0], df.iloc[:, 1], c=colors)
+    plt.show()
+    return df
 
 def train(input_data, output_file):
     # learning_rate = 1 #alpha
@@ -55,7 +62,7 @@ def train(input_data, output_file):
     visualize_scatter(df, feat1=1, feat2=2, labels=0, weights=w_current, title='')
 
 
-
+# from plot_db.py
 def visualize_scatter(df, feat1=0, feat2=1, labels=2, weights=[-1, -1, 1],
                       title=''):
     """
@@ -99,22 +106,16 @@ def visualize_scatter(df, feat1=0, feat2=1, labels=2, weights=[-1, -1, 1],
     plt.show()
 
 
-
-def read_data():
-    # read csv file into dataframe
-    df = pd.read_csv('/Users/samya/PycharmProjects/perceptron/data1.csv')
-    # if second column is 1, plot it blue, otherwise red
-    colors = np.where(df.iloc[:, 2] == 1, 'blue', 'red')
-    # plot
-    plt.scatter(df.iloc[:, 0], df.iloc[:, 1], c=colors)
-    plt.show()
-    return df
+def pla(input, output):
+    data = read_data(input)
+    train(data, output)
 
 
 def main():
     '''YOUR CODE GOES HERE'''
-    data = read_data()
-    train(data, 'results1.csv')
+    input = sys.argv[1]
+    output = sys.argv[2]
+    pla(input, output)
 
 
 if __name__ == "__main__":
