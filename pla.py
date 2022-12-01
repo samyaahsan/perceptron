@@ -11,28 +11,18 @@ from matplotlib import pyplot as plt
 
 def train(input_data, output_file):
     # learning_rate = 1 #alpha
+    write_weights = []
     data = pd.DataFrame(input_data).to_numpy()
     zeros = np.ones((17,1))
     data = np.hstack((zeros,data))
-    #print(data)
-
-    # w_old = np.zeros(3)
-    # w_current = np.zeros(3)
-    # for row in data:
-    #     if np.subtract(w_current, w_old) == 0:
-    #         break
-    #     data_point = row[:3] #ignore label
-    #     # y_i * f(x_i) = label * sign(weight vector @ data vector)
-    #     sign = row[3] * np.sign(w_current@data_point)
-    #     if sign <= 0:
-    #         #update weights
-    #         w_old = w_current
-    #         w_current = w_current + sign
+    change_order_list = []
+    output_data = []
 
     w_old = np.zeros(3)
     w_current = np.zeros(3)
     convergence = False
-    #print(data)
+    output_data.append([0, 0, 0])
+
     while not convergence:
         w_old = w_current #change bc first run modifies w_old and w_current
         for row in data:
@@ -40,28 +30,28 @@ def train(input_data, output_file):
             # y_i * f(x_i) = label * sign(weight vector @ data vector)
             #signed = row[3] * np.sign(w_current @ data_point)
             signed = row[3] * np.sign(np.dot(w_current, data_point))
-            #print(np.dot(w_current, data_point))
 
             if signed <= 0:
                 # update weights
                 w_old = np.copy(w_current)
                 w_current += row[3] * data_point
-                #print(w_old, w_current)
-                #print(w_current)
 
+        w_current_copy = w_current.copy()
+        output_line = np.hstack((int(w_current_copy[1]), int(w_current_copy[2])))
+        output_line = np.hstack((output_line, int(w_current_copy[0])))
+        output_data.append(output_line)
 
-        # check_zeros = np.subtract(w_current, w_old)
-        # check_zeros = np.array_equal(w_current, w_old)
 
         if np.array_equal(w_current, w_old): #convergence
-            print(w_current, w_old)
             convergence = True
 
+    #print(write_weights)
+    output_df = pd.DataFrame(output_data)
+    print(output_df)
+    output_df.to_csv(output_file,header=False, index=False)
     df = pd.DataFrame(data)
-    #print(df)
-
-    #print(w_current)
     w_current = [w_current[1], w_current[2], w_current[0]]
+    #print(w_current)
     visualize_scatter(df, feat1=1, feat2=2, labels=0, weights=w_current, title='')
 
 
@@ -124,7 +114,7 @@ def read_data():
 def main():
     '''YOUR CODE GOES HERE'''
     data = read_data()
-    train(data, 'hello.txt')
+    train(data, 'results1.csv')
 
 
 if __name__ == "__main__":
