@@ -10,17 +10,17 @@ def read_data(input):
     # read csv file into dataframe
     df = pd.read_csv(input)
     # if second column is 1, plot it blue, otherwise red
-    colors = np.where(df.iloc[:, 2] == 1, 'blue', 'red')
-    # plot
-    plt.scatter(df.iloc[:, 0], df.iloc[:, 1], c=colors)
-    plt.show()
+    # colors = np.where(df.iloc[:, 2] == 1, 'blue', 'red')
+    # # plot
+    # plt.scatter(df.iloc[:, 0], df.iloc[:, 1], c=colors)
+    # plt.show()
     return df
 
 def train(input_data, output_file):
     # learning_rate = 1 #alpha
     write_weights = []
     data = pd.DataFrame(input_data).to_numpy()
-    zeros = np.ones((17,1))
+    zeros = np.ones((16,1))
     data = np.hstack((zeros,data))
     change_order_list = []
     output_data = []
@@ -29,7 +29,7 @@ def train(input_data, output_file):
     w_current = np.zeros(3)
     convergence = False
     output_data.append([0, 0, 0])
-
+    #output_file = open(output_file, "w")
     while not convergence:
         w_old = w_current #change bc first run modifies w_old and w_current
         for row in data:
@@ -56,10 +56,11 @@ def train(input_data, output_file):
     output_df = pd.DataFrame(output_data)
     print(output_df)
     output_df.to_csv(output_file,header=False, index=False)
+    #output_file.close()
     df = pd.DataFrame(data)
     w_current = [w_current[1], w_current[2], w_current[0]]
     #print(w_current)
-    visualize_scatter(df, feat1=1, feat2=2, labels=0, weights=w_current, title='')
+    #visualize_scatter(df, feat1=1, feat2=2, labels=0, weights=w_current, title='')
 
 
 # from plot_db.py
@@ -113,9 +114,12 @@ def pla(input, output):
 
 def main():
     '''YOUR CODE GOES HERE'''
+
     input = sys.argv[1]
     output = sys.argv[2]
+
     pla(input, output)
+
 
 
 if __name__ == "__main__":
